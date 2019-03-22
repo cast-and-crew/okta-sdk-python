@@ -71,6 +71,31 @@ class UserGroupsClient(ApiClient):
         response = ApiClient.get_path(self, '/{0}/users'.format(gid))
         return Utils.deserialize(response.text, User)
 
+    def get_paged_group_users(self, gid, limit=None, after=None, url=None):
+        """Get the users of a group
+
+        :param gid: the group id
+        :type gid: str
+        :param limit: maximum number of groups to return
+        :type limit: int or None
+        :param after: group id that filtering will resume after
+        :type after: str
+        :param url: url that returns a list of UserGroup
+        :type url: str
+        :rtype: User
+        """
+
+        if url:
+            response = ApiClient.get(self, url)
+        else:
+            params = {
+                'limit': limit,
+                'after': after
+            }
+            response = ApiClient.get_path(self, '/{0}/users'.format(gid),
+                                          params=params)
+        return PagedResults(response, User)
+
     def update_group(self, group):
         """Update a group
 
